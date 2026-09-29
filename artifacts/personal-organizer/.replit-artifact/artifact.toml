@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Personal Organizer"
+description = "A calm personal organizer for capturing tasks and notes, planning today, and keeping small commitments visible without clutter."
+version = "1.0.0"
+id = "artifacts/personal-organizer"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22746
+
+[services.development]
+run = "pnpm --filter @workspace/personal-organizer run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/personal-organizer", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/personal-organizer/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22746"
+BASE_PATH = "/"

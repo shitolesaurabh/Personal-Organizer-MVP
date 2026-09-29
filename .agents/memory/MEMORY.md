@@ -1,0 +1,1 @@
+- [Lazy starter data](lazy-starter-data.md) — concurrent first reads must share one in-flight seed promise to avoid duplicate examples.

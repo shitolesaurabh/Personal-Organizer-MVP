@@ -1,6 +1,6 @@
-# [Project name]
+# Personal Organizer
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A calm personal organizer for capturing tasks and notes, planning today, and keeping small commitments visible without clutter.
 
 ## Run & Operate
 
@@ -22,23 +22,34 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/personal-organizer/src/App.tsx` — main organizer UI and client-side navigation
+- `artifacts/personal-organizer/src/index.css` — visual theme and responsive styles
+- `lib/api-spec/openapi.yaml` — source of truth for task, note, and summary API contracts
+- `artifacts/api-server/src/routes/organizer.ts` — organizer API handlers and starter data
+- `lib/db/src/schema/tasks.ts` / `notes.ts` — Drizzle database tables
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The first version is a single-user organizer without authentication; task and note data lives in the shared PostgreSQL database.
+- The API is contract-first: OpenAPI generates the React Query client and Zod schemas used by the server and UI.
+- Calendar due dates use PostgreSQL `date` values so a task's day is not shifted by timezone conversion.
+- Starter examples are inserted lazily on the first organizer read so the initial experience is useful without a separate seed command.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Today overview with task counts, completion progress, due-today count, and recent notes
+- Create, complete, edit, and delete tasks with priorities and optional due dates
+- Browse, search, create, edit, and delete notes
+- Responsive desktop sidebar and mobile navigation
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+No additional preferences recorded.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Restart both managed app workflows after changing API contracts or server routes.
+- Run `pnpm --filter @workspace/api-spec run codegen` after editing `lib/api-spec/openapi.yaml`.
 
 ## Pointers
 

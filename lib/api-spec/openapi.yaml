@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: organizer
+    description: Personal organizer operations
 paths:
   /healthz:
     get:
@@ -24,7 +26,154 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /tasks:
+    get:
+      operationId: listTasks
+      tags: [organizer]
+      summary: List tasks
+      responses:
+        "200":
+          description: Task list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      operationId: createTask
+      tags: [organizer]
+      summary: Create a task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+  /tasks/{id}:
+    patch:
+      operationId: updateTask
+      tags: [organizer]
+      summary: Update a task
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdate"
+      responses:
+        "200":
+          description: Updated task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+    delete:
+      operationId: deleteTask
+      tags: [organizer]
+      summary: Delete a task
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Task deleted
+        "404":
+          description: Task not found
+  /notes:
+    get:
+      operationId: listNotes
+      tags: [organizer]
+      summary: List notes
+      responses:
+        "200":
+          description: Note list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Note"
+    post:
+      operationId: createNote
+      tags: [organizer]
+      summary: Create a note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteInput"
+      responses:
+        "201":
+          description: Created note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+  /notes/{id}:
+    patch:
+      operationId: updateNote
+      tags: [organizer]
+      summary: Update a note
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteUpdate"
+      responses:
+        "200":
+          description: Updated note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+        "404":
+          description: Note not found
+    delete:
+      operationId: deleteNote
+      tags: [organizer]
+      summary: Delete a note
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Note deleted
+        "404":
+          description: Note not found
+  /organizer/summary:
+    get:
+      operationId: getOrganizerSummary
+      tags: [organizer]
+      summary: Get organizer summary
+      responses:
+        "200":
+          description: Summary of organizer data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizerSummary"
 components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +182,89 @@ components:
           type: string
       required:
         - status
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        completed:
+          type: boolean
+        dueDate:
+          type: ["string", "null"]
+        priority:
+          type: string
+          enum: [low, medium, high]
+        createdAt:
+          type: string
+      required: [id, title, completed, dueDate, priority, createdAt]
+    TaskInput:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        dueDate:
+          type: ["string", "null"]
+        priority:
+          type: string
+          enum: [low, medium, high]
+      required: [title]
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        completed:
+          type: boolean
+        dueDate:
+          type: ["string", "null"]
+        priority:
+          type: string
+          enum: [low, medium, high]
+    Note:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        body:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, title, body, updatedAt]
+    NoteInput:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        body:
+          type: string
+      required: [title, body]
+    NoteUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        body:
+          type: string
+    OrganizerSummary:
+      type: object
+      properties:
+        totalTasks:
+          type: integer
+        completedTasks:
+          type: integer
+        openTasks:
+          type: integer
+        todayTasks:
+          type: integer
+        totalNotes:
+          type: integer
+      required: [totalTasks, completedTasks, openTasks, todayTasks, totalNotes]
 
